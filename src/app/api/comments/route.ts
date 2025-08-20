@@ -1,11 +1,15 @@
 import { comments } from "./data";
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 
 // GET handler - get all the existing data
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const query = searchParams.get("query");
+  const filteredComments = query ? comments.filter((comment) => comment.text.includes(query)) : comments;
+  
   try {
-    return new Response(JSON.stringify(comments), {
+    return new Response(JSON.stringify(filteredComments), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
